@@ -72,13 +72,6 @@ EFECTIVIDAD_EN_VICTIMA
 -- ******************************************************************
 -- Funciones para Obtener ID's 
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getVictimaID;
-DROP FUNCTION IF EXISTS getAsociadoID;
-DROP FUNCTION IF EXISTS getHospitalID;
-DROP FUNCTION IF EXISTS getRegistroID;
-DROP FUNCTION IF EXISTS getVictimaAsociadoID;
-DROP FUNCTION IF EXISTS getTratamientoID;
-
 DELIMITER $$
 
 CREATE FUNCTION getVictimaID(nombres varchar(50),apellidos varchar(50)) RETURNS INT DETERMINISTIC
@@ -151,8 +144,6 @@ DELIMITER ;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de victimas en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getVictimas;
-DROP PROCEDURE IF EXISTS loadVictimas;
 DELETE FROM Victima WHERE idVictima>0;
 ALTER TABLE Victima AUTO_INCREMENT = 1;
 
@@ -190,8 +181,6 @@ SELECT * FROM Victima;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de hospital en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getHospitales;
-DROP PROCEDURE IF EXISTS loadHospitales;
 DELETE FROM Hospital WHERE idHospital>0;
 ALTER TABLE Hospital AUTO_INCREMENT = 1;
 
@@ -224,8 +213,6 @@ SELECT * FROM Hospital;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de Asociado en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getAsociados;
-DROP PROCEDURE IF EXISTS loadAsociados;
 DELETE FROM Asociado WHERE idAsociado>0;
 ALTER TABLE Asociado AUTO_INCREMENT = 1;
 
@@ -258,8 +245,6 @@ SELECT * FROM Asociado;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de Victima-Asociado en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getVictimaAsociado;
-DROP PROCEDURE IF EXISTS loadVictimaAsociados;
 DELETE FROM VictimaAsociado WHERE idVictimaAsociado>0;
 ALTER TABLE VictimaAsociado AUTO_INCREMENT = 1;
 
@@ -295,8 +280,6 @@ SELECT * FROM VictimaAsociado;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de Registro en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getRegistro;
-DROP PROCEDURE IF EXISTS loadRegistro;
 DELETE FROM Registro WHERE idRegistro>0;
 ALTER TABLE Registro AUTO_INCREMENT = 1;
 
@@ -331,8 +314,6 @@ SELECT * FROM Registro;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de Ubicacion en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getUbicacion;
-DROP PROCEDURE IF EXISTS loadUbicacion;
 DELETE FROM Ubicacion WHERE idUbicacion>0;
 ALTER TABLE Ubicacion AUTO_INCREMENT = 1;
 
@@ -369,8 +350,6 @@ SELECT * FROM Ubicacion;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de Contacto en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getContacto;
-DROP PROCEDURE IF EXISTS loadContacto;
 DELETE FROM Contacto WHERE idContacto>0;
 ALTER TABLE Contacto AUTO_INCREMENT = 1;
 
@@ -407,8 +386,6 @@ SELECT * FROM Contacto;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de Tratamiento en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getTratamiento;
-DROP PROCEDURE IF EXISTS loadTratamiento;
 DELETE FROM Tratamiento WHERE idTratamiento>0;
 ALTER TABLE Tratamiento AUTO_INCREMENT = 1;
 
@@ -443,8 +420,6 @@ SELECT * FROM Tratamiento;
 -- ******************************************************************
 -- Funcion y Procedure para cargar datos de PersonaTratamiento en el modelo
 -- ******************************************************************
-DROP FUNCTION IF EXISTS getPersonaTratamiento;
-DROP PROCEDURE IF EXISTS loadPersonaTratamiento;
 DELETE FROM PersonaTratamiento WHERE idPersonaTratamiento>0;
 ALTER TABLE PersonaTratamiento AUTO_INCREMENT = 1;
 
@@ -484,6 +459,45 @@ DELIMITER ;
 
 CALL loadPersonaTratamiento();
 SELECT * FROM PersonaTratamiento;
+
+
+-- ******************************************************************
+-- Drop de Funciones 
+-- ******************************************************************
+DROP FUNCTION IF EXISTS getVictimaID;
+DROP FUNCTION IF EXISTS getAsociadoID;
+DROP FUNCTION IF EXISTS getHospitalID;
+DROP FUNCTION IF EXISTS getRegistroID;
+DROP FUNCTION IF EXISTS getVictimaAsociadoID;
+DROP FUNCTION IF EXISTS getTratamientoID;
+
+-- ******************************************************************
+-- Drop de Procedimientos de Carga 
+-- ******************************************************************
+DROP PROCEDURE IF EXISTS loadVictimas;
+DROP PROCEDURE IF EXISTS loadHospitales;
+DROP PROCEDURE IF EXISTS loadAsociados;
+DROP PROCEDURE IF EXISTS loadVictimaAsociados;
+DROP PROCEDURE IF EXISTS loadRegistro;
+DROP PROCEDURE IF EXISTS loadUbicacion;
+DROP PROCEDURE IF EXISTS loadContacto;
+DROP PROCEDURE IF EXISTS loadTratamiento;
+DROP PROCEDURE IF EXISTS loadPersonaTratamiento;
+-- ******************************************************************
+-- Drop de Funciones de Carga
+-- ******************************************************************
+DROP FUNCTION IF EXISTS getVictimas;
+DROP FUNCTION IF EXISTS getHospitales;
+DROP FUNCTION IF EXISTS getAsociados;
+DROP FUNCTION IF EXISTS getVictimaAsociado;
+DROP FUNCTION IF EXISTS getRegistro;
+DROP FUNCTION IF EXISTS getUbicacion;
+DROP FUNCTION IF EXISTS getContacto;
+DROP FUNCTION IF EXISTS getTratamiento;
+DROP FUNCTION IF EXISTS getPersonaTratamiento;
+
+
+
 
 
 

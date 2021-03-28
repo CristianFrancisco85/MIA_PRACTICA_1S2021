@@ -11,7 +11,7 @@ WHERE Victima.Estado = 'Muerte'
 GROUP BY Registro.idHospital;
 
 -- ******************************************************************
--- Vista del Reporte 3
+-- Vista del Reporte 2
 -- ******************************************************************
 CREATE OR REPLACE VIEW Reporte2 AS
 SELECT DISTINCT Victima.Nombres,Victima.Apellidos FROM Victima 
@@ -71,6 +71,58 @@ Victima.FechaMuerte != '0000-00-00 00:00:00'
 AND Ubicacion.Direccion='1987 Delphine Well';
 
 -- ******************************************************************
+-- Vista del Reporte 7
+-- ******************************************************************
+DROP FUNCTION IF EXISTS getNumAllegados;
+DROP FUNCTION IF EXISTS getNumTratamientos;
+
+DELIMITER $$
+
+CREATE FUNCTION getNumAllegados(victimaID int) RETURNS INT DETERMINISTIC
+BEGIN
+
+	RETURN (
+		SELECT COUNT(*) FROM Asociado
+        INNER JOIN VictimaAsociado ON Asociado.idAsociado = VictimaAsociado.idAsociado
+        INNER JOIN Victima ON VictimaAsociado.idVictima = Victima.idVictima
+        WHERE Victima.idVictima = victimaID
+    );
+		
+END $$
+CREATE FUNCTION getNumTratamientos(victimaID int) RETURNS INT DETERMINISTIC
+BEGIN
+
+	RETURN (
+		SELECT COUNT(*) FROM Tratamiento
+        INNER JOIN PersonaTratamiento ON Tratamiento.idTratamiento = PersonaTratamiento.idTratamiento
+        INNER JOIN Registro ON PersonaTratamiento.idRegistro = Registro.idRegistro
+        INNER JOIN Victima ON Registro.idVictima = Victima.idVictima
+        WHERE Victima.idVictima = victimaID
+    );
+		
+END $$
+
+DELIMITER ;
+
+CREATE OR REPLACE VIEW Reporte7 AS
+SELECT Victima.Nombres,Victima.Apellidos,Victima.Direccion FROM Victima
+WHERE getNumAllegados(Victima.idVictima)<2 AND getNumTratamientos(Victima.idVictima)=2;
+
+-- ******************************************************************
+-- Vista del Reporte 8
+-- ******************************************************************
+
+CREATE OR REPLACE VIEW Reporte8 AS(
+	(SELECT Victima.Nombres,Victima.Apellidos,Victima.FechaSospecha,getNumTratamientos(Victima.idVictima)FROM Victima
+	ORDER BY getNumTratamientos(Victima.idVictima) DESC
+	LIMIT 5)
+	UNION
+	(SELECT Victima.Nombres,Victima.Apellidos,Victima.FechaSospecha,getNumTratamientos(Victima.idVictima) FROM Victima
+	ORDER BY getNumTratamientos(Victima.idVictima) ASC
+	LIMIT 5)
+);
+
+-- ******************************************************************
 -- Vista del Reporte 9
 -- ******************************************************************
 DROP FUNCTION IF EXISTS getTotalFallecidos;
@@ -107,22 +159,26 @@ DELIMITER $$
 CREATE PROCEDURE getContactos()
 BEGIN
 
-	DROP TEMPORARY TABLE IF EXISTS Temp_Table;
-	CREATE TEMPORARY TABLE Temp_Table (
-		ID_Hospital int,
+	DROP TEMPORARY TABLE IF EXISTS Temp1;
+    DROP TEMPORARY TABLE IF EXISTS Temp2;
+	CREATE TEMPORARY TABLE Temp1 (
+		Nombre_Hospital VARCHAR(100),
+		Tipo_Contacto VARCHAR(100),
+		Porcentaje VARCHAR(100)
+	);
+	CREATE TEMPORARY TABLE Temp2 (
 		Nombre_Hospital VARCHAR(100),
 		Tipo_Contacto VARCHAR(100),
 		Porcentaje VARCHAR(100)
 	);
     
-	INSERT INTO Temp_Table(ID_Hospital,Nombre_Hospital,Tipo_Contacto,Porcentaje)(
-		SELECT Nombre,Tipo,MAX(Numero_Contactos) FROM (
+	INSERT INTO Temp1(Nombre_Hospital,Tipo_Contacto,Porcentaje)(
+        SELECT  Nombre,Tipo,MAX(Numero_Contactos) AS Num_Contactos FROM (
 			SELECT Hospital.Nombre,Contacto.Tipo,COUNT(*) AS Numero_Contactos FROM Hospital
 			INNER JOIN Registro ON Hospital.idHospital = Registro.idHospital
 			INNER JOIN Victima ON Registro.idVictima = Victima.idVictima
 			INNER JOIN VictimaAsociado ON Victima.idVictima = VictimaAsociado.idVictima
 			INNER JOIN Contacto ON VictimaAsociado.idVictimaAsociado = Contacto.idVictimaAsociado
-			WHERE Hospital.idHospital NOT IN (SELECT Temp_Table.ID_Hospital FROM Temp_Table)
 			GROUP BY Hospital.Nombre,Contacto.Tipo
 			ORDER BY Hospital.Nombre,Numero_contactos DESC
         ) AS AUX1
@@ -137,7 +193,6 @@ DELIMITER ;
 
 
 SELECT Hospital.Nombre FROM Hospital
-
 GROUP BY Hospital.Nombre,Contacto.Tipo;
 
 
@@ -148,6 +203,6 @@ SELECT * FROM Reporte3;
 SELECT * FROM Reporte4;
 SELECT * FROM Reporte5;
 SELECT * FROM Reporte6;
-
-
+SELECT * FROM Reporte7;
+SELECT * FROM Reporte8;
 SELECT * FROM Reporte9;

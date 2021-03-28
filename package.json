@@ -1,0 +1,22 @@
+{
+  "name": "mia_practica1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CristianFrancisco85/MIA_PRACTICA_1S2021.git"
+  },
+  "author": "Cristian Meoño",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CristianFrancisco85/MIA_PRACTICA_1S2021/issues"
+  },
+  "homepage": "https://github.com/CristianFrancisco85/MIA_PRACTICA_1S2021#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}

@@ -1,6 +1,5 @@
-DROP SCHEMA IF EXISTS MIA_Practica;
-CREATE SCHEMA MIA_Practica;
 USE MIA_Practica;
+CALL dropModel();
 
 CREATE TABLE Hospital( 
     idHospital INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -104,3 +103,66 @@ CREATE TABLE PersonaTratamiento(
     FOREIGN KEY (idTratamiento) REFERENCES Tratamiento(idTratamiento) ON DELETE CASCADE
 
 );
+
+-- ******************************************************************
+-- Se cargan Victimas
+-- ******************************************************************
+DELETE FROM Victima WHERE idVictima>0;
+ALTER TABLE Victima AUTO_INCREMENT = 1;
+CALL loadVictimas();
+
+-- ******************************************************************
+-- Se cargan Hospitales
+-- ******************************************************************
+DELETE FROM Hospital WHERE idHospital>0;
+ALTER TABLE Hospital AUTO_INCREMENT = 1;
+CALL loadHospitales();
+
+-- ******************************************************************
+-- Se cargan Asociados
+-- ******************************************************************
+DELETE FROM Asociado WHERE idAsociado>0;
+ALTER TABLE Asociado AUTO_INCREMENT = 1;
+CALL loadAsociados();
+
+-- ******************************************************************
+-- Se cargan VictimaAsociados
+-- ******************************************************************
+DELETE FROM VictimaAsociado WHERE idVictimaAsociado>0;
+ALTER TABLE VictimaAsociado AUTO_INCREMENT = 1;
+CALL loadVictimaAsociados();
+
+-- ******************************************************************
+-- Funcion y Procedure para cargar datos de Registro en el modelo
+-- ******************************************************************
+DELETE FROM Registro WHERE idRegistro>0;
+ALTER TABLE Registro AUTO_INCREMENT = 1;
+CALL loadRegistro();
+
+-- ******************************************************************
+-- Se cargan Ubicaciones
+-- ******************************************************************
+DELETE FROM Ubicacion WHERE idUbicacion>0;
+ALTER TABLE Ubicacion AUTO_INCREMENT = 1;
+CALL loadUbicacion();
+
+-- ******************************************************************
+-- Se cargan Contactos
+-- ******************************************************************
+DELETE FROM Contacto WHERE idContacto>0;
+ALTER TABLE Contacto AUTO_INCREMENT = 1;
+CALL loadContacto();
+
+-- ******************************************************************
+-- Se cargan tratamientos
+-- ******************************************************************
+DELETE FROM Tratamiento WHERE idTratamiento>0;
+ALTER TABLE Tratamiento AUTO_INCREMENT = 1;
+CALL loadTratamiento();
+
+-- ******************************************************************
+-- Se cargan PersonaTratamientos
+-- ******************************************************************
+DELETE FROM PersonaTratamiento WHERE idPersonaTratamiento>0;
+ALTER TABLE PersonaTratamiento AUTO_INCREMENT = 1;
+CALL loadPersonaTratamiento();

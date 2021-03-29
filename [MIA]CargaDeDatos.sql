@@ -152,7 +152,7 @@ DELIMITER $$
 CREATE FUNCTION getVictimas(nombres varchar(50),apellidos varchar(50)) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN CONCAT(nombres,apellidos) NOT IN (SELECT CONCAT(Victima.Nombres,Victima.Apellidos) FROM Victima) ;
+	RETURN (CONCAT(nombres,apellidos) NOT IN (SELECT CONCAT(Victima.Nombres,Victima.Apellidos) FROM Victima));
 	
 END $$
 
@@ -189,7 +189,7 @@ DELIMITER $$
 CREATE FUNCTION getHospitales(nombre varchar(100)) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN  nombre NOT IN (SELECT Hospital.Nombre FROM Hospital);
+	RETURN  (nombre NOT IN (SELECT Hospital.Nombre FROM Hospital));
 	
 END $$
 
@@ -221,7 +221,7 @@ DELIMITER $$
 CREATE FUNCTION getAsociados(nombres varchar(50),apellidos varchar(50)) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN  CONCAT(nombres,apellidos) NOT IN (SELECT CONCAT(Asociado.Nombres,Asociado.Apellidos) FROM Asociado) ;
+	RETURN  (CONCAT(nombres,apellidos) NOT IN (SELECT CONCAT(Asociado.Nombres,Asociado.Apellidos) FROM Asociado));
 	
 END $$
 
@@ -253,7 +253,7 @@ DELIMITER $$
 CREATE FUNCTION getVictimaAsociado(victimaID int, asociadoID int ) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN (victimaID,asociadoID) NOT IN (SELECT VictimaAsociado.idVictima,VictimaAsociado.idAsociado FROM VictimaAsociado) ;
+	RETURN ((victimaID,asociadoID) NOT IN (SELECT VictimaAsociado.idVictima,VictimaAsociado.idAsociado FROM VictimaAsociado));
 	
 END $$
 
@@ -288,7 +288,7 @@ DELIMITER $$
 CREATE FUNCTION getRegistro(hospitalID int, victimaID int ) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN (hospitalID,victimaID) NOT IN (SELECT Registro.idHospital,Registro.idVictima FROM Registro) ;
+	RETURN ((hospitalID,victimaID) NOT IN (SELECT Registro.idHospital,Registro.idVictima FROM Registro));
 	
 END $$
 
@@ -322,7 +322,7 @@ DELIMITER $$
 CREATE FUNCTION getUbicacion(victimaID int, fechaLlegada datetime, fechaRetiro datetime) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN (victimaID,fechaLlegada,fechaRetiro) NOT IN (SELECT Ubicacion.idVictima,Ubicacion.FechaLlegada,Ubicacion.FechaRetiro FROM Ubicacion)	;
+	RETURN ((victimaID,fechaLlegada,fechaRetiro) NOT IN (SELECT Ubicacion.idVictima,Ubicacion.FechaLlegada,Ubicacion.FechaRetiro FROM Ubicacion));
 	
 END $$
 
@@ -358,7 +358,7 @@ DELIMITER $$
 CREATE FUNCTION getContacto(victimaAsociadoID int, fechaInicio datetime, fechaFin datetime) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN (victimaAsociadoID,fechaInicio,fechaFin) NOT IN (SELECT Contacto.idVictimaAsociado,Contacto.FechaInicio,Contacto.FechaFin FROM Contacto)	;
+	RETURN ((victimaAsociadoID,fechaInicio,fechaFin) NOT IN (SELECT Contacto.idVictimaAsociado,Contacto.FechaInicio,Contacto.FechaFin FROM Contacto));
 	
 END $$
 
@@ -394,7 +394,7 @@ DELIMITER $$
 CREATE FUNCTION getTratamiento(nombre varchar(100)) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN (nombre) NOT IN (SELECT Tratamiento.Nombre FROM Tratamiento)	;
+	RETURN ((nombre) NOT IN (SELECT Tratamiento.Nombre FROM Tratamiento));
 	
 END $$
 
@@ -428,7 +428,9 @@ DELIMITER $$
 CREATE FUNCTION getPersonaTratamiento(registroID int,tratamientoID int,fechaInicio datetime,fechaFin datetime) RETURNS BOOLEAN DETERMINISTIC
 BEGIN
 
-	RETURN (registroID,tratamientoID,fechaInicio,fechaFin) NOT IN (SELECT PersonaTratamiento.idRegistro,PersonaTratamiento.idTratamiento,PersonaTratamiento.FechaInicio,PersonaTratamiento.FechaFin FROM PersonaTratamiento)	;
+	RETURN (
+    (registroID,tratamientoID,fechaInicio,fechaFin) NOT IN (SELECT PersonaTratamiento.idRegistro,PersonaTratamiento.idTratamiento,PersonaTratamiento.FechaInicio,PersonaTratamiento.FechaFin FROM PersonaTratamiento)
+    );
 	
 END $$
 
@@ -447,7 +449,7 @@ BEGIN
     CSVTable.Tratamiento!= '' 
     AND 
     getPersonaTratamiento(
-    getRegistro(getHospitalID(CSVTable.NOMBRE_HOSPITAL),getVictimaID(CSVTable.NOMBRE_VICTIMA,CSVTable.APELLIDO_VICTIMA)),
+    getRegistroID(getHospitalID(CSVTable.NOMBRE_HOSPITAL),getVictimaID(CSVTable.NOMBRE_VICTIMA,CSVTable.APELLIDO_VICTIMA)),
     getTratamientoID(CSVTable.TRATAMIENTO),
     CSVTable.FECHA_INICIO_TRATAMIENTO,
     CSVTable.FECHA_FIN_TRATAMIENTO

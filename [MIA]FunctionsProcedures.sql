@@ -4,8 +4,6 @@
 -- ******************************************************************
 
 
-
-
 -- ******************************************************************
 -- Funciones para Obtener ID's 
 -- ******************************************************************
@@ -348,7 +346,7 @@ END $$
 -- Funcion para Consulta 9
 -- ******************************************************************
 
-CREATE FUNCTION getTotalFallecidos() RETURNS INT DETERMINISTIC
+CREATE FUNCTION getTotalRegistrados() RETURNS INT DETERMINISTIC
 BEGIN
 
 	RETURN (
@@ -356,7 +354,6 @@ BEGIN
 			SELECT COUNT(*) AS Fallecidos FROM Registro 
 			INNER JOIN Victima ON Victima.idVictima = Registro.idVictima 
 			INNER JOIN Hospital ON Hospital.idHospital = Registro.idHospital
-			WHERE Victima.Estado = 'Muerte' 
 			GROUP BY Registro.idHospital
         ) AS A
     );

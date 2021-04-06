@@ -361,12 +361,57 @@ BEGIN
 END$$
 
 -- ******************************************************************
--- Funcion para Consulta 10
+-- Funcion y Procedimiento para Consulta 10
 -- ******************************************************************
 
-CREATE FUNCTION getContactos(nombre varchar(100)) RETURNS BOOLEAN DETERMINISTIC
+CREATE FUNCTION getTotalContactos(nombreHospital varchar(100)) RETURNS INT DETERMINISTIC
 BEGIN
         RETURN (
-			(nombre) NOT IN (SELECT Nombre_Hospital FROm Temp1)
+			SELECT SUM(Numero_Contactos) FROM (
+				SELECT Hospital.Nombre,Contacto.Tipo,COUNT(*) AS Numero_Contactos FROM Hospital
+				INNER JOIN Registro ON Hospital.idHospital = Registro.idHospital
+				INNER JOIN Victima ON Registro.idVictima = Victima.idVictima
+				INNER JOIN VictimaAsociado ON Victima.idVictima = VictimaAsociado.idVictima
+				INNER JOIN Contacto ON VictimaAsociado.idVictimaAsociado = Contacto.idVictimaAsociado
+                WHERE Hospital.Nombre=nombreHospital
+				GROUP BY Hospital.Nombre,Contacto.Tipo
+			) AS AUX
         );
+        
 END $$
+
+CREATE FUNCTION getMaxContacto(nombreHospital varchar(100)) RETURNS FLOAT DETERMINISTIC
+BEGIN
+        RETURN (
+			SELECT MAX(Numero_Contactos) FROM (
+				SELECT Hospital.Nombre,Contacto.Tipo,(COUNT(*)*100)/getTotalContactos(Hospital.Nombre) AS Numero_Contactos FROM Hospital
+				INNER JOIN Registro ON Hospital.idHospital = Registro.idHospital
+				INNER JOIN Victima ON Registro.idVictima = Victima.idVictima
+				INNER JOIN VictimaAsociado ON Victima.idVictima = VictimaAsociado.idVictima
+				INNER JOIN Contacto ON VictimaAsociado.idVictimaAsociado = Contacto.idVictimaAsociado
+                WHERE Hospital.Nombre=nombreHospital
+				GROUP BY Hospital.Nombre,Contacto.Tipo
+			) AS AUX
+        );
+        
+END $$
+
+CREATE FUNCTION getMaxContactoTipo(nombreHospital varchar(100)) RETURNS VARCHAR(100) DETERMINISTIC
+BEGIN
+        RETURN (
+			SELECT Tipo FROM (
+				SELECT Hospital.Nombre,Contacto.Tipo AS Tipo,(COUNT(*)*100)/getTotalContactos(Hospital.Nombre) AS Numero_Contactos FROM Hospital
+				INNER JOIN Registro ON Hospital.idHospital = Registro.idHospital
+				INNER JOIN Victima ON Registro.idVictima = Victima.idVictima
+				INNER JOIN VictimaAsociado ON Victima.idVictima = VictimaAsociado.idVictima
+				INNER JOIN Contacto ON VictimaAsociado.idVictimaAsociado = Contacto.idVictimaAsociado
+                WHERE Hospital.Nombre=nombreHospital
+				GROUP BY Hospital.Nombre,Contacto.Tipo
+                ORDER BY Numero_Contactos DESC
+			) AS AUX
+            LIMIT 1
+        );
+        
+END $$
+
+DELIMITER ;

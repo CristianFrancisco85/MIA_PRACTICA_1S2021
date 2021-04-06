@@ -110,11 +110,11 @@ GROUP BY Registro.idHospital);
 -- Vista del Reporte 10
 -- ******************************************************************
 CREATE OR REPLACE VIEW Reporte10 AS(
-SELECT Hospital.Nombre,Contacto.Tipo,COUNT(*) AS Numero_Contactos FROM Hospital
+SELECT Hospital.Nombre,getMaxContactoTipo(Hospital.Nombre),CONCAT(getMaxContacto(Hospital.Nombre),'%') AS Porcentaje FROM Hospital
 INNER JOIN Registro ON Hospital.idHospital = Registro.idHospital
 INNER JOIN Victima ON Registro.idVictima = Victima.idVictima
 INNER JOIN VictimaAsociado ON Victima.idVictima = VictimaAsociado.idVictima
 INNER JOIN Contacto ON VictimaAsociado.idVictimaAsociado = Contacto.idVictimaAsociado
-GROUP BY Hospital.Nombre,Contacto.Tipo
-ORDER BY Hospital.Nombre,Numero_contactos DESC);
+GROUP BY Hospital.Nombre
+ORDER BY Hospital.Nombre,Porcentaje ASC);
 
